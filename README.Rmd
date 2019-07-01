@@ -1,0 +1,283 @@
+---
+output: github_document
+---
+
+```{r, echo = FALSE}
+library(knitr)
+```
+### Disentangling herbivore impacts in primary succession by refocusing the plant stress and vigor hypotheses on phenology
+
+Che-Castaldo, C., C. M. Crisafulli J. G. Bishop, E. F. Zipkin, and W. F. Fagan. 2019. *Ecological Monographs*.
+
+Code/Data DOI:
+
+Please contact the first author for questions about the code or data: Christian Che-Castaldo (chrischecastaldo@icloud.com)
+
+---
+
+### Abstract
+
+The plant stress and plant vigor hypotheses are widely used to explain the distribution and abundance of insect herbivores across their host plants. These hypotheses are the subject of contentious debate within the plant herbivore research community, with several studies finding simultaneous support for both hypotheses for the same plant-herbivore interaction. We address the question of how such support is possible using dynamic site-occupancy models to quantify the attack dynamics of *Cryptorynchus lapathi* (poplar-willow weevil) on *Salix sitchensis* (Sitka willow), a dioecious shrub colonizing  Mount St.\ Helens after the 1980 eruption, in relation to host plant stress, vigor, and sex. We also introduce several scaling criteria as a rigorous test of the plant vigor hypothesis and demonstrate why modeling insect detection is important in plant-insect studies. Weevils responded positively to water stress associated with seasonal dry-downs, and this response was phenologically compartmentalized by larval feeding mode. Weevils preferentially attacked large and/or flowering stems, imposing an ecological cost on willow reproduction via increased stem mortality and susceptibility to future attack. We propose that the dual response to host plant stress and vigor is due to the synchronization between young weevil larval feeding and willow nutrient pulses that are mediated by environmental stress. In turn, this process drives successional dynamics, causing the juvenilization of upland willow plants and possibly delaying establishment of a willow-dominated upland sere. These results highlight the common, but often overlooked, phenological basis of the plant stress and plant vigor hypotheses, which both focus on how stress changes the quality of plant resources available to immature insects.  
+
+---
+
+### Repository Directory
+
+1. `Library` contains the 12 datasets used in this paper. The metadata for each dataset are listed below. 
+
+2. `ModelBuild` contains the R and bash scripts used to fit the willow-weevil occupancy model in JAGS on AWS, as well as all model output.
+
+3. `FiguresTablesEtc` contains the R scripts used to make all figures and tables. 
+
+4. `StemBiomass` contains the R script for the model of willow stem biomass as a function of willow basal stem diameter used to estimate the scaling coefficient $n_{1}$. 
+
+5. `StemMeasurementError` contains the R script for the model that estimates the routine error associated with measuring willow basal stem diameters using calipers.
+
+----
+
+### Library Metadata
+
+#### SalixBorderWide
+
+Metadata for the willow-weevil dataset described in the Methods and Appendices S4-S7.
+
+```{r, echo = FALSE}
+load(file = "Library/SalixBorerWide.rda")
+dt <- data.frame(field = names(SalixBorerWide))
+dt$description[1] <- "name of transect, see methods and Appendix S4"
+dt$description[2] <- "meter mark along transect, see Methods and Appendix S4"
+dt$description[3] <- "willow plant identifier used during field surveys, see Methods and Appendix S4"
+dt$description[4] <- "willow 1<sup>st</sup> order stem identifier used during field surveys, see Methods and Appendix S5"
+dt$description[5] <- "habitat of willow plant: 0 = riparian, 1 = upland"
+dt$description[6] <- "sex of willow plant: 0 = male, 1 = female"
+dt$description[7] <- "willow plant identifier used in occupancy model"
+dt$description[8] <- "willow stem identifier used in occupancy model"
+dt$description[9] <- "status of willow stem in 2009: 0 = dead or did not exist, 1 = alive, see Methods and Appendix S5"
+dt$description[10] <- "status of willow stem in 2010: 0 = dead or did not exist, 1 = alive, see Methods and Appendix S5"
+dt$description[11] <- "status of willow stem in 2011: 0 = dead or did not exist, 1 = alive, see Methods and Appendix S5"
+dt$description[12] <- "number of 2<sup>nd</sup> order branches on willow stem in 2009, see Methods and Appendix S5"
+dt$description[13] <- "number of 2<sup>nd</sup> order branches on willow stem in 2010, see Methods and Appendix S5"
+dt$description[14] <- "number of 2<sup>nd</sup> order branches on willow stem in 2011, see Methods and Appendix S5"
+dt$description[15] <- "estimated total basal stem diameter in mm (tbd) in 2009, see Methods and Appendices S6-S7"
+dt$description[16] <- "estimated total basal stem diameter in mm (tbd) in 2010, see Methods and Appendices S6-S7"
+dt$description[17] <- "estimated total basal stem diameter in mm (tbd) in 2011, see Methods and Appendices S6-S7"
+dt$description[18] <- "relative growth rate (rgr) of tbd from 2009 to 2010, see Methods and Appendix S7"
+dt$description[19] <- "relative growth rate (rgr) of tbd from 2010 to 2011, see Methods and Appendix S7"
+dt$description[20] <- "standardized 2009 tbd, see Methods"
+dt$description[21] <- "standardized 2010 tbd, see Methods"
+dt$description[22] <- "standardized 2011 tbd, see Methods"
+dt$description[23] <- "standardized 2009 to 2010 rgr, see Methods"
+dt$description[24] <- "standardized 2010 to 2011 rgr, see Methods"
+dt$description[25] <- "stem reproductive status in 2009: 0 = non-reproductive, 1 = reproductive, see Methods"
+dt$description[26] <- "stem reproductive status in 2010: 0 = non-reproductive, 1 = reproductive, see Methods"
+dt$description[27] <- "stem reproductive status in 2011: 0 = non-reproductive, 1 = reproductive, see Methods"
+dt$description[28] <- "weevil larvae visual survey by observer 1 in 2009: 0 = no, 1 = yes, see Methods and Fig. S1-S2B"
+dt$description[29] <- "weevil larvae visual survey by observer 2 in 2009: 0 = no, 1 = yes, see Methods and Fig. S1-S2B"
+dt$description[30] <- "weevil larvae visual survey by observer 1 in 2010: 0 = no, 1 = yes, see Methods and Fig. S1-S2B"
+dt$description[31] <- "weevil larvae visual survey by observer 2 in 2010: 0 = no, 1 = yes, see Methods and Fig. S1-S2B"
+dt$description[32] <- "weevil larvae visual survey by observer 1 in 2011: 0 = no, 1 = yes, see Methods and Fig. S1-S2B"
+dt$description[33] <- "weevil larvae visual survey by observer 2 in 2011: 0 = no, 1 = yes, see Methods and Fig. S1-S2B"
+dt$description[34] <- "mean tbd of upland (habitat = 1) 2009 stems, see Methods for explanation"
+dt$description[35] <- "standard deviation of tbd of upland (habitat = 1) 2009 stems, see Methods for explanation"
+dt$description[36] <- "mean tbd of 2009 riparian (habitat = 0) and all stems in 2010 and 2011"
+dt$description[37] <- "standard deviation of 2009 riparian (habitat = 0) and all stems in 2010 and 2011"
+dt$description[38] <- "mean rgr of all stems"
+dt$description[39] <- "standard deviation of rgr of all stems"
+kable(dt)
+```
+
+<br>
+
+#### stemBiomass
+
+Metadata for the harvested upland willow stem dataset described in the Methods and Appendix S8.
+
+```{r, echo = FALSE}
+load(file = "Library/stemBiomass.rda")
+dt <- data.frame(field = names(stemBiomass))
+dt$description[1] <- "stem identifier"
+dt$description[2] <- "aboveground stem biomass (g)"
+dt$description[3] <- "basal stem diameter (mm)"
+kable(dt)
+```
+
+<br>
+
+#### pairedStemMeasurements
+
+Metadata for the caliper measurement error dataset described in the Methods and Appendix S6.
+
+```{r, echo = FALSE}
+load(file = "Library/pairedStemMeasurements.rda")
+dt <- data.frame(field = names(pairedStemMeasurements))
+dt$description[1] <- "basal stem diameter (mm) measured by observer 1"
+dt$description[2] <- "basal stem diameter (mm) measured by observer 2"
+kable(dt)
+```
+
+<br>
+
+#### transectPoints
+
+Metadata for the `sf` dataset of upland and riparian transect point locations referenced in the willow-weevil dataset.
+
+```{r, echo = FALSE}
+load(file = "Library/transectPoints.rda")
+dt <- data.frame(field = names(transectPoints))
+dt$description[1] <- "name of transect, see methods and Appendix S4"
+dt$description[2] <- "meter mark along transect, see Methods and Appendix S4"
+dt$description[3] <- "type of transect point, riparian vs. upland"
+dt$description[4] <- "transect point coordinates in WGS84 (epsg:4326)"
+kable(dt)
+```
+
+<br>
+
+#### weevilPhenology
+
+Metadata for the willow-phenology dataset described in the Methods and Appendix S9.
+
+```{r, echo = FALSE}
+load(file = "Library/weevilPhenology.rda")
+dt <- data.frame(field = names(weevilPhenology))
+dt$description[1] <- "willow stem identifier"
+dt$description[2] <- "date willow stem harvested"
+dt$description[3] <- "month willow stem harvested"
+dt$description[4] <- "year willow stem harvested"
+dt$description[5] <- "habitat willow stem harvested from: riparian vs. upland"
+dt$description[6] <- "life stage of weevils found inside willow stem: eggs vs. early instars"
+dt$description[7] <- "number of weevil eggs or early instars per willow stem_id"
+kable(dt)
+```
+
+<br>
+
+#### soilReleaseCurve
+
+Metadata for the soil release curve dataset described in Appendices S2 and S3.
+
+```{r, echo = FALSE}
+load(file = "Library/soilReleaseCurve.rda")
+dt <- data.frame(field = names(soilReleaseCurve))
+dt$description[1] <- "raw sensor voltage (mV)"
+dt$description[2] <- "variable water content (m^3^ water  m^-3^ soil)"
+dt$description[3] <- "soil water potential (-kPa)"
+kable(dt)
+```
+
+<br>
+
+#### soilProbes
+
+Metadata for the soil moisture dataset described and/or plotted in Appendices S2 and S3.
+
+```{r, echo = FALSE}
+library(knitr)
+load(file = "Library/soilProbes.rda")
+dt <- data.frame(field = names(soilProbes))
+dt$description[1] <- "Decagon logger id"
+dt$description[2] <- "Decagon EC-5 soil moisture sensor port id"
+dt$description[3] <- "sensor emplaced in dry vs. irrigated soil"
+dt$description[4] <- "year of sensor reading"
+dt$description[5] <- "date and time of sensor reading"
+dt$description[6] <- "raw sensor voltage (mV)"
+dt$description[7] <- "variable water content (m^3^ water m^-3^ soil)"
+dt$description[8] <- "percent soil field capacity"
+kable(dt)
+```
+
+<br>
+
+#### dailyPrecipitation
+
+Metadata for the [Spirit Lake SNOTEL 777](https://wcc.sc.egov.usda.gov/nwcc/site?sitenum=777) daily precipitation dataset plotted in Appendix S2.
+
+```{r, echo = FALSE}
+load(file = "Library/dailyPrecipitation.rda")
+dt <- data.frame(field = names(dailyPrecipitation))
+dt$description[1] <- "date and time of measurement"
+dt$description[2] <- "daily precipitation (cm) based on the PREC.I-1 field"
+kable(dt)
+```
+
+<br>
+
+#### monthlySnotel
+
+Metadata for the [Spirit Lake SNOTEL 777](https://wcc.sc.egov.usda.gov/nwcc/site?sitenum=777) monthly precipitation dataset plotted in Appendix S2.
+
+```{r, echo = FALSE}
+load(file = "Library/monthlySnotel.rda")
+dt <- data.frame(field = names(monthlySnotel))
+dt$description[1] <- "year of measurement"
+dt$description[2] <- "month of measurement"
+dt$description[3] <- "monthly precipitation (cm) based on the precipitation accumulation field"
+kable(dt)
+```
+
+<br>
+
+#### hoboPumicePlain
+
+Metadata for the hobo temperature and relative humidity dataset plotted in Appendix S2.
+
+```{r, echo = FALSE}
+load(file = "Library/hoboPumicePlain.rda")
+dt <- data.frame(field = names(hoboPumicePlain))
+dt$description[1] <- "month"
+dt$description[2] <- "habitat Hobo loggers were deployed in: 0 = riparian, 1 = upland"
+dt$description[3] <- "mean daily temperature (°C)"
+dt$description[4] <- "standard deviation of daily temperature (°C)"
+dt$description[5] <- "mean minimum daily relative humidity (percent)"
+dt$description[6] <- "standard deviation minimum daily relative humidity (percent)"
+kable(dt)
+```
+
+<br>
+
+#### leafGasExchange
+
+Metadata for the leaf gas exchange dataset described in Appendix S3.
+
+```{r, echo = FALSE}
+load(file = "Library/leafGasExchange.rda")
+dt <- data.frame(field = names(leafGasExchange))
+dt$description[1] <- "plant tag identifier"
+dt$description[2] <- "artificial stream identifier, W vs. E, see Appendix S3"
+dt$description[3] <- "identifier for 3 m subunits of stream containing 3 male and 3 female plants, see Appendix S3"
+dt$description[4] <- "identifier for section of stream with similar soil water content in response to experimental irrigation"
+dt$description[5] <- "percent soil field capacity of each section on dates indicated below, see Appendix S3"
+dt$description[6] <- "leaf identifier unique to each plant"
+dt$description[7] <- "year of gas exchange measurements and leaf harvesting"
+dt$description[8] <- "date of gas exchange measurements and leaf harvesting"
+dt$description[9] <- "time of gas exchange measurements and leaf harvesting"
+dt$description[10] <- "area of leaf area inside Licor 6400 portable photosynthesis system leaf chamber (mm^2^)"
+dt$description[11] <- "area of entire leaf measured in imageJ (mm^2^)"
+dt$description[12] <- "mass of dried leaf (g)"
+dt$description[13] <- "leaf mass to area ratio (g mm^-2^)"
+dt$description[14] <- "instantaneous transpiration rate (mol H<sub>2</sub>O m<sup>-2</sup> s<sup>-1</sup>) measured with Licor 6400"
+dt$description[15] <- "instantaneous photosynthetic rate (mol CO<sub>2</sub> m<sup>-2</sup> s<sup>-1</sup>) measured with Licor 6400"
+dt$description[16] <- "stomatal conductance (mol H<sub>2</sub>O m<sup>-2</sup> s<sup>-1</sup>) measured with Licor 6400"
+dt$description[17] <- "intercellular CO<sub>2</sub> concentration measured with Licor 6400"
+dt$description[18] <- "instantaneous water use efficiency calculated as photosynthesis / conductance"
+kable(dt)
+```
+
+<br>
+
+#### leafP
+
+Metadata for the leaf gas exchange dataset described in Appendix S3.
+
+```{r, echo = FALSE}
+load(file = "Library/leafP.rda")
+dt <- data.frame(field = names(leafP))
+dt$description[1] <- "plant tag identifier"
+dt$description[2] <- "artificial stream identifier, W vs. E, see Appendix S3"
+dt$description[3] <- "identifier for 3 m subunits of stream containing 3 male and 3 female plants, see Appendix S3"
+dt$description[4] <- "identifier for section of stream with similar soil water content in response to experimental irrigation"
+dt$description[5] <- "percent soil field capacity of each section on dates indicated below, see Appendix S3"
+dt$description[6] <- "year of gas exchange measurements and leaf harvesting"
+dt$description[7] <- "leaf percent phosphorus"
+kable(dt)
+```
