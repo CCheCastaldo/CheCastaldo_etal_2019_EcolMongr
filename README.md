@@ -3,7 +3,7 @@
 
 Che-Castaldo, C., C. M. Crisafulli J. G. Bishop, E. F. Zipkin, and W. F. Fagan. 2019. *Ecological Monographs*.
 
-Code/Data DOI:
+[![DOI](https://zenodo.org/badge/DOI/10.5281/zenodo.3265488.svg)](https://doi.org/10.5281/zenodo.3265488)
 
 Please contact the first author for questions about the code or data: Christian Che-Castaldo (<chrischecastaldo@icloud.com>)
 
