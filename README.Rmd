@@ -23,26 +23,26 @@ The plant stress and plant vigor hypotheses are widely used to explain the distr
 
 ### Repository Directory
 
-1. `Library` contains the 12 datasets used in this paper. The metadata for each dataset are listed below. 
+1. `library` contains the 12 datasets used in this paper. The metadata for each dataset are listed below. 
 
-2. `ModelBuild` contains the R and bash scripts used to fit the willow-weevil occupancy model in JAGS on AWS, as well as all model output.
+2. `model_build` contains the R and bash scripts used to fit the willow-weevil occupancy model in JAGS on AWS, as well as all model output.
 
-3. `FiguresTablesEtc` contains the R scripts used to make all figures and tables. 
+3. `figures_tables` contains the R scripts used to make all figures and tables. 
 
-4. `StemBiomass` contains the R script for the model of willow stem biomass as a function of willow basal stem diameter used to estimate the scaling coefficient $n_{1}$. 
+4. `stem_biomass` contains the R script for the model of willow stem biomass as a function of willow basal stem diameter used to estimate the scaling coefficient $n_{1}$. 
 
-5. `StemMeasurementError` contains the R script for the model that estimates the routine error associated with measuring willow basal stem diameters using calipers.
+5. `stem_measurement_error` contains the R script for the model that estimates the routine error associated with measuring willow basal stem diameters using calipers.
 
 ----
 
 ### Library Metadata
 
-#### SalixBorderWide
+#### SalixBorerWide
 
 Metadata for the willow-weevil dataset described in the Methods and Appendices S4-S7.
 
 ```{r, echo = FALSE}
-load(file = "Library/SalixBorerWide.rda")
+load(file = "library/salix_borer_wide.rda")
 dt <- data.frame(field = names(SalixBorerWide))
 dt$description[1] <- "name of transect, see methods and Appendix S4"
 dt$description[2] <- "meter mark along transect, see Methods and Appendix S4"
@@ -93,7 +93,7 @@ kable(dt)
 Metadata for the harvested upland willow stem dataset described in the Methods and Appendix S8.
 
 ```{r, echo = FALSE}
-load(file = "Library/stemBiomass.rda")
+load(file = "library/stem_biomass.rda")
 dt <- data.frame(field = names(stemBiomass))
 dt$description[1] <- "stem identifier"
 dt$description[2] <- "aboveground stem biomass (g)"
@@ -108,7 +108,7 @@ kable(dt)
 Metadata for the caliper measurement error dataset described in the Methods and Appendix S6.
 
 ```{r, echo = FALSE}
-load(file = "Library/pairedStemMeasurements.rda")
+load(file = "library/paired_stem_measurements.rda")
 dt <- data.frame(field = names(pairedStemMeasurements))
 dt$description[1] <- "basal stem diameter (mm) measured by observer 1"
 dt$description[2] <- "basal stem diameter (mm) measured by observer 2"
@@ -122,7 +122,7 @@ kable(dt)
 Metadata for the `sf` dataset of upland and riparian transect point locations referenced in the willow-weevil dataset.
 
 ```{r, echo = FALSE}
-load(file = "Library/transectPoints.rda")
+load(file = "library/transect_points.rda")
 dt <- data.frame(field = names(transectPoints))
 dt$description[1] <- "name of transect, see methods and Appendix S4"
 dt$description[2] <- "meter mark along transect, see Methods and Appendix S4"
@@ -138,7 +138,7 @@ kable(dt)
 Metadata for the willow-phenology dataset described in the Methods and Appendix S9.
 
 ```{r, echo = FALSE}
-load(file = "Library/weevilPhenology.rda")
+load(file = "library/weevil_phenology.rda")
 dt <- data.frame(field = names(weevilPhenology))
 dt$description[1] <- "willow stem identifier"
 dt$description[2] <- "date willow stem harvested"
@@ -157,7 +157,7 @@ kable(dt)
 Metadata for the soil release curve dataset described in Appendices S2 and S3.
 
 ```{r, echo = FALSE}
-load(file = "Library/soilReleaseCurve.rda")
+load(file = "library/soil_release_curve.rda")
 dt <- data.frame(field = names(soilReleaseCurve))
 dt$description[1] <- "raw sensor voltage (mV)"
 dt$description[2] <- "variable water content (m^3^ water  m^-3^ soil)"
@@ -173,7 +173,7 @@ Metadata for the soil moisture dataset described and/or plotted in Appendices S2
 
 ```{r, echo = FALSE}
 library(knitr)
-load(file = "Library/soilProbes.rda")
+load(file = "library/soil_probes.rda")
 dt <- data.frame(field = names(soilProbes))
 dt$description[1] <- "Decagon logger id"
 dt$description[2] <- "Decagon EC-5 soil moisture sensor port id"
@@ -193,7 +193,7 @@ kable(dt)
 Metadata for the [Spirit Lake SNOTEL 777](https://wcc.sc.egov.usda.gov/nwcc/site?sitenum=777) daily precipitation dataset plotted in Appendix S2.
 
 ```{r, echo = FALSE}
-load(file = "Library/dailyPrecipitation.rda")
+load(file = "library/daily_precipitation.rda")
 dt <- data.frame(field = names(dailyPrecipitation))
 dt$description[1] <- "date and time of measurement"
 dt$description[2] <- "daily precipitation (cm) based on the PREC.I-1 field"
@@ -207,7 +207,7 @@ kable(dt)
 Metadata for the [Spirit Lake SNOTEL 777](https://wcc.sc.egov.usda.gov/nwcc/site?sitenum=777) monthly precipitation dataset plotted in Appendix S2.
 
 ```{r, echo = FALSE}
-load(file = "Library/monthlySnotel.rda")
+load(file = "library/monthly_snotel.rda")
 dt <- data.frame(field = names(monthlySnotel))
 dt$description[1] <- "year of measurement"
 dt$description[2] <- "month of measurement"
@@ -222,7 +222,7 @@ kable(dt)
 Metadata for the hobo temperature and relative humidity dataset plotted in Appendix S2.
 
 ```{r, echo = FALSE}
-load(file = "Library/hoboPumicePlain.rda")
+load(file = "library/hobo_pumice_plain.rda")
 dt <- data.frame(field = names(hoboPumicePlain))
 dt$description[1] <- "month"
 dt$description[2] <- "habitat Hobo loggers were deployed in: 0 = riparian, 1 = upland"
@@ -240,7 +240,7 @@ kable(dt)
 Metadata for the leaf gas exchange dataset described in Appendix S3.
 
 ```{r, echo = FALSE}
-load(file = "Library/leafGasExchange.rda")
+load(file = "library/leaf_gas_exchange.rda")
 dt <- data.frame(field = names(leafGasExchange))
 dt$description[1] <- "plant tag identifier"
 dt$description[2] <- "artificial stream identifier, W vs. E, see Appendix S3"
@@ -270,7 +270,7 @@ kable(dt)
 Metadata for the leaf gas exchange dataset described in Appendix S3.
 
 ```{r, echo = FALSE}
-load(file = "Library/leafP.rda")
+load(file = "library/leaf_p.rda")
 dt <- data.frame(field = names(leafP))
 dt$description[1] <- "plant tag identifier"
 dt$description[2] <- "artificial stream identifier, W vs. E, see Appendix S3"
