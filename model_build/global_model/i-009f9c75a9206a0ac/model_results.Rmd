@@ -1,0 +1,84 @@
+---
+output: html_document
+---
+
+#### Model Results
+##### `r format(Sys.Date(), format="%B %d, %Y")`
+
+- - -
+
+```{r preliminaries, include = FALSE, results = "hide", messages = FALSE, warnings = FALSE}
+rm(list = ls())
+library(knitr)
+library(plyr)
+library(markdown)
+library(broman)
+library(coda)
+library(gdata)
+knitr::opts_chunk$set(cache = FALSE, warnings = FALSE, tidy = FALSE, crop = FALSE)
+```
+
+``` {r, echo = FALSE}
+load(file = "MCMCsamplesCore.rda")
+load(file = "MCMCsamplesPPC.rda")
+```
+
+#### I. Summary statistics and trace plots
+
+<br>
+
+```{r echo = FALSE, fig.width = 8, fig.height = 8, fig.align = 'center', crop = FALSE}
+plot(MCMCsamplesCore)
+summary(MCMCsamplesCore)
+```
+
+<br>
+
+#### II. Gelman-Rubin diagnostic
+
+<br>
+
+```{r echo = FALSE, eval = TRUE}
+gelman.diag(MCMCsamplesCore)
+```
+
+<br>
+
+#### III. Posterior predictive check
+
+<br>
+
+```{r echo = FALSE, fig.width = 7, fig.height = 7, fig.align = 'center'}
+
+chains <- rbind(as.matrix(MCMCsamplesPPC[[1]]), as.matrix(MCMCsamplesPPC[[2]]), as.matrix(MCMCsamplesPPC[[3]]))
+
+fitActual <- chains[, matchcols(chains, with = "zActual")]
+
+fitNew <- chains[, matchcols(chains, with = "zNew")]
+
+bppc <- array(0, dim = dim(chains)[1])
+
+i <- which(fitNew > fitActual)
+
+bppc[i] <- 1
+
+minValue <- min(c(fitActual, fitNew))
+
+maxValue <- max(c(fitActual, fitNew))
+
+mv1 <- round_any(minValue, 1000, f = floor)
+
+mv2 <- round_any(maxValue, 1000, f = ceiling)
+
+par(mar = c(5, 5, 1, 1))
+
+plot(fitActual, fitNew, main = NULL, xlab = expression(T^{obs}), ylab = "", xlim = c(mv1, mv2), ylim = c(mv1, mv2), cex.lab = 1, cex.axis = 1, las = 1)
+
+mtext(expression(T^{rep}), side = 2, line = 4, cex = 1)
+
+abline(0, 1, lwd = 2)
+```
+
+Scatterplot of summed squared residuals. The Bayesian posterior predictive check p-value was `r myround(mean(bppc), 2)`.
+
+
